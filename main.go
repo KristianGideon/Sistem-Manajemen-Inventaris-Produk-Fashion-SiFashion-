@@ -12,188 +12,186 @@ type Product struct {
 	Stock    int
 }
 
-var products []Product
-var nextID int = 1
+var daftarProduk []Product
+var idBerikutnya int = 1
 
-func readLine() string {
-	var result string
+func bacaBaris() string {
+	var hasil string
 	for {
-		var ch byte
-		_, err := fmt.Scanf("%c", &ch)
-		if err != nil || ch == '\n' {
-			break
+		var huruf byte
+		fmt.Scanf("%c", &huruf)
+		if huruf == '\n' {
+			return hasil
 		}
-		if ch != '\r' {
-			result += string(ch)
+		if huruf != '\r' {
+			hasil += string(huruf)
 		}
 	}
-	return result
 }
 
-func contains(s, substr string) bool {
-	if len(substr) == 0 {
+func adaSubstring(teks, cari string) bool {
+	if len(cari) == 0 {
 		return true
 	}
-	if len(s) < len(substr) {
+	if len(teks) < len(cari) {
 		return false
 	}
-	for i := 0; i <= len(s)-len(substr); i++ {
-		match := true
-		for j := 0; j < len(substr); j++ {
-			c1 := s[i+j]
-			c2 := substr[j]
-			if c1 >= 'A' && c1 <= 'Z' {
-				c1 += 32
+	for i := 0; i <= len(teks)-len(cari); i++ {
+		cocok := true
+		for j := 0; j < len(cari); j++ {
+			a := teks[i+j]
+			b := cari[j]
+			if a >= 'A' && a <= 'Z' {
+				a += 32
 			}
-			if c2 >= 'A' && c2 <= 'Z' {
-				c2 += 32
+			if b >= 'A' && b <= 'Z' {
+				b += 32
 			}
-			if c1 != c2 {
-				match = false
+			if a != b {
+				cocok = false
 				break
 			}
 		}
-		if match {
+		if cocok {
 			return true
 		}
 	}
 	return false
 }
 
-func addProduct() {
+func tambahProduk() {
 	var p Product
-	p.ID = nextID
-	nextID++
+	p.ID = idBerikutnya
+	idBerikutnya++
 	fmt.Print("Nama: ")
-	p.Name = readLine()
+	p.Name = bacaBaris()
 	fmt.Print("Kategori: ")
-	p.Category = readLine()
+	p.Category = bacaBaris()
 	fmt.Print("Ukuran: ")
-	p.Size = readLine()
+	p.Size = bacaBaris()
 	fmt.Print("Warna: ")
-	p.Color = readLine()
+	p.Color = bacaBaris()
 	fmt.Print("Harga: ")
-	var priceStr string
-	priceStr = readLine()
-	fmt.Sscanf(priceStr, "%f", &p.Price)
+	hargaStr := bacaBaris()
+	fmt.Sscanf(hargaStr, "%f", &p.Price)
 	fmt.Print("Stok: ")
-	var stockStr string
-	stockStr = readLine()
-	fmt.Sscanf(stockStr, "%d", &p.Stock)
-	products = append(products, p)
+	stokStr := bacaBaris()
+	fmt.Sscanf(stokStr, "%d", &p.Stock)
+	daftarProduk = append(daftarProduk, p)
 	fmt.Println("Produk berhasil ditambahkan.")
 }
 
-func viewProducts() {
-	if len(products) == 0 {
+func lihatProduk() {
+	if len(daftarProduk) == 0 {
 		fmt.Println("Tidak ada produk.")
 		return
 	}
-	for i := 0; i < len(products); i++ {
-		p := products[i]
-		fmt.Printf("ID: %d, Nama: %s, Kategori: %s, Ukuran: %s, Warna: %s, Harga: %.2f, Stok: %d\n", p.ID, p.Name, p.Category, p.Size, p.Color, p.Price, p.Stock)
+	for i := 0; i < len(daftarProduk); i++ {
+		p := daftarProduk[i]
+		fmt.Printf("ID: %d, Nama: %s, Kategori: %s, Ukuran: %s, Warna: %s, Harga: %.2f, Stok: %d\n",
+			p.ID, p.Name, p.Category, p.Size, p.Color, p.Price, p.Stock)
 	}
 }
 
-func updateProduct() {
+func ubahProduk() {
 	fmt.Print("Masukkan ID produk yang akan diubah: ")
-	var idStr string
-	idStr = readLine()
+	idStr := bacaBaris()
 	var id int
 	fmt.Sscanf(idStr, "%d", &id)
-	idx := -1
-	for i := 0; i < len(products); i++ {
-		if products[i].ID == id {
-			idx = i
+	posisi := -1
+	for i := 0; i < len(daftarProduk); i++ {
+		if daftarProduk[i].ID == id {
+			posisi = i
 			break
 		}
 	}
-	if idx == -1 {
+	if posisi == -1 {
 		fmt.Println("Produk tidak ditemukan.")
 		return
 	}
 	fmt.Print("Nama baru (kosongkan untuk tidak mengubah): ")
-	name := readLine()
-	if name != "" {
-		products[idx].Name = name
+	nama := bacaBaris()
+	if nama != "" {
+		daftarProduk[posisi].Name = nama
 	}
 	fmt.Print("Kategori baru (kosongkan untuk tidak mengubah): ")
-	cat := readLine()
-	if cat != "" {
-		products[idx].Category = cat
+	kategori := bacaBaris()
+	if kategori != "" {
+		daftarProduk[posisi].Category = kategori
 	}
 	fmt.Print("Ukuran baru (kosongkan untuk tidak mengubah): ")
-	size := readLine()
-	if size != "" {
-		products[idx].Size = size
+	ukuran := bacaBaris()
+	if ukuran != "" {
+		daftarProduk[posisi].Size = ukuran
 	}
 	fmt.Print("Warna baru (kosongkan untuk tidak mengubah): ")
-	color := readLine()
-	if color != "" {
-		products[idx].Color = color
+	warna := bacaBaris()
+	if warna != "" {
+		daftarProduk[posisi].Color = warna
 	}
 	fmt.Print("Harga baru (kosongkan untuk tidak mengubah): ")
-	priceStr := readLine()
-	if priceStr != "" {
-		var price float64
-		fmt.Sscanf(priceStr, "%f", &price)
-		products[idx].Price = price
+	hargaStr := bacaBaris()
+	if hargaStr != "" {
+		var harga float64
+		fmt.Sscanf(hargaStr, "%f", &harga)
+		daftarProduk[posisi].Price = harga
 	}
 	fmt.Print("Stok baru (kosongkan untuk tidak mengubah): ")
-	stockStr := readLine()
-	if stockStr != "" {
-		var stock int
-		fmt.Sscanf(stockStr, "%d", &stock)
-		products[idx].Stock = stock
+	stokStr := bacaBaris()
+	if stokStr != "" {
+		var stok int
+		fmt.Sscanf(stokStr, "%d", &stok)
+		daftarProduk[posisi].Stock = stok
 	}
 	fmt.Println("Produk berhasil diubah.")
 }
 
-func deleteProduct() {
+func hapusProduk() {
 	fmt.Print("Masukkan ID produk yang akan dihapus: ")
-	var idStr string
-	idStr = readLine()
+	idStr := bacaBaris()
 	var id int
 	fmt.Sscanf(idStr, "%d", &id)
-	idx := -1
-	for i := 0; i < len(products); i++ {
-		if products[i].ID == id {
-			idx = i
+	posisi := -1
+	for i := 0; i < len(daftarProduk); i++ {
+		if daftarProduk[i].ID == id {
+			posisi = i
 			break
 		}
 	}
-	if idx == -1 {
+	if posisi == -1 {
 		fmt.Println("Produk tidak ditemukan.")
 		return
 	}
-	var newProducts []Product
-	for i := 0; i < len(products); i++ {
-		if i != idx {
-			newProducts = append(newProducts, products[i])
+	var sisaProduk []Product
+	for i := 0; i < len(daftarProduk); i++ {
+		if i != posisi {
+			sisaProduk = append(sisaProduk, daftarProduk[i])
 		}
 	}
-	products = newProducts
+	daftarProduk = sisaProduk
 	fmt.Println("Produk berhasil dihapus.")
 }
 
-func searchProduct() {
+func cariProduk() {
 	fmt.Print("Masukkan kata kunci pencarian (nama/kategori): ")
-	keyword := readLine()
-	found := false
-	for i := 0; i < len(products); i++ {
-		if contains(products[i].Name, keyword) || contains(products[i].Category, keyword) {
-			p := products[i]
-			fmt.Printf("ID: %d, Nama: %s, Kategori: %s, Ukuran: %s, Warna: %s, Harga: %.2f, Stok: %d\n", p.ID, p.Name, p.Category, p.Size, p.Color, p.Price, p.Stock)
-			found = true
+	katakunci := bacaBaris()
+	ketemu := false
+	for i := 0; i < len(daftarProduk); i++ {
+		if adaSubstring(daftarProduk[i].Name, katakunci) || adaSubstring(daftarProduk[i].Category, katakunci) {
+			p := daftarProduk[i]
+			fmt.Printf("ID: %d, Nama: %s, Kategori: %s, Ukuran: %s, Warna: %s, Harga: %.2f, Stok: %d\n",
+				p.ID, p.Name, p.Category, p.Size, p.Color, p.Price, p.Stock)
+			ketemu = true
 		}
 	}
-	if !found {
+	if !ketemu {
 		fmt.Println("Produk tidak ditemukan.")
 	}
 }
 
 func main() {
 	for {
+		fmt.Println("=== SiFashion - Manajemen Produk ===")
 		fmt.Println("1. Tambah Produk")
 		fmt.Println("2. Lihat Semua Produk")
 		fmt.Println("3. Ubah Produk")
@@ -201,20 +199,20 @@ func main() {
 		fmt.Println("5. Cari Produk")
 		fmt.Println("0. Keluar")
 		fmt.Print("Pilih menu: ")
-		var choiceStr string
-		choiceStr = readLine()
-		if choiceStr == "0" {
+		pilihan := bacaBaris()
+		if pilihan == "0" {
+			fmt.Println("")
 			break
-		} else if choiceStr == "1" {
-			addProduct()
-		} else if choiceStr == "2" {
-			viewProducts()
-		} else if choiceStr == "3" {
-			updateProduct()
-		} else if choiceStr == "4" {
-			deleteProduct()
-		} else if choiceStr == "5" {
-			searchProduct()
+		} else if pilihan == "1" {
+			tambahProduk()
+		} else if pilihan == "2" {
+			lihatProduk()
+		} else if pilihan == "3" {
+			ubahProduk()
+		} else if pilihan == "4" {
+			hapusProduk()
+		} else if pilihan == "5" {
+			cariProduk()
 		} else {
 			fmt.Println("Pilihan tidak valid.")
 		}
