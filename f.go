@@ -3,8 +3,8 @@ package main
 import "fmt"
 
 type akun struct {
-	username string
-	password string
+	username	string
+	password	string
 }
 
 var idMul int = 10
@@ -12,14 +12,14 @@ var idMul int = 10
 var ak = [5]akun{{username: "admin", password: "admin"}, {username: "user", password: "user"}, {username: "1", password: "1"}}
 
 type Product struct {
-	Id       int
-	Nama     string
-	kategori string
-	Ukuran   string
-	Warna    string
-	Harga    float64
-	Stok     int
-	Terjual  int
+	Id		int
+	Nama		string
+	kategori	string
+	Ukuran		string
+	Warna		string
+	Harga		float64
+	Stok		int
+	Terjual		int
 }
 
 var produk = [100]Product{{1, "Kaos Polos", "Atasan", "L", "Hitam", 75000, 50, 0}, {2, "Celana Chino", "Bawahan", "32", "Khaki", 150000, 30, 0}, {3, "Topi Snapback", "Aksesoris", "One Size", "Merah", 90000, 25, 0}, {4, "Boxer Brief", "Pakaian Dalam", "M", "Abu-abu", 45000, 100, 0}, {5, "Celana Training", "Pakaian Olahraga", "XL", "Biru Navy", 120000, 40, 0}, {6, "Jaket Hoodie", "Outerwear", "L", "Hitam", 200000, 20, 0}, {7, "Kemeja Putih", "Pakaian Formal", "42", "Putih", 180000, 15, 0}, {8, "Gelang Tali", "Aksesoris", "One Size", "Coklat", 25000, 75, 0}, {9, "Rok Lipit", "Bawahan", "S", "Hitam", 110000, 35, 0}, {10, "Rompi Wanita", "Atasan", "M", "Krem", 85000, 28, 0}}
@@ -31,8 +31,6 @@ func main() {
 		menu()
 	}
 }
-
-// FUNCTION BANTUAN atau INCLUDER
 
 func login() bool {
 	var username string
@@ -276,7 +274,7 @@ func cariByUkuran() {
 
 	var hasil []Product
 	for i := 0; i < idMul; i++ {
-		// Sequential search
+
 		if produk[i].Id != 0 && (containsI(produk[i].Ukuran, ukuran) || toLower(produk[i].Ukuran) == toLower(ukuran)) {
 			hasil = append(hasil, produk[i])
 		}
@@ -306,7 +304,6 @@ func cariByWarna() {
 		}
 	}
 
-	// Sort by Warna (Selection Sort or similar) - case insensitive sort
 	for i := 0; i < len(urut)-1; i++ {
 		minIdx := i
 		for j := i + 1; j < len(urut); j++ {
@@ -319,7 +316,6 @@ func cariByWarna() {
 		urut[minIdx] = temp
 	}
 
-	// Binary Search
 	left := 0
 	right := len(urut) - 1
 	var hasil []Product
@@ -332,14 +328,12 @@ func cariByWarna() {
 		if wMid == wSearch {
 			hasil = append(hasil, urut[mid])
 
-			// Expand left
 			i := mid - 1
 			for i >= 0 && toLower(urut[i].Warna) == wSearch {
 				hasil = append(hasil, urut[i])
 				i--
 			}
 
-			// Expand right
 			i = mid + 1
 			for i < len(urut) && toLower(urut[i].Warna) == wSearch {
 				hasil = append(hasil, urut[i])
@@ -394,7 +388,6 @@ func urutHarga() {
 		}
 	}
 
-	// Selection Sort (Ascending)
 	for i := 0; i < len(urut)-1; i++ {
 		minIdx := i
 		for j := i + 1; j < len(urut); j++ {
@@ -419,7 +412,6 @@ func urutStok() {
 		}
 	}
 
-	// Insertion Sort (Ascending)
 	for i := 1; i < len(urut); i++ {
 		key := urut[i]
 		j := i - 1
@@ -489,12 +481,13 @@ func cekStok() {
 func tambahStock() {
 	clear()
 	fmt.Println(bor(15), "Tambah Stock", bor(15))
-	fmt.Print("Cari produk (keyword nama): ")
-	tampil()
+	id := menuCariStok()
 
-	var id int
-	fmt.Print("Masukkan ID produk yang akan ditambahkan stok: ")
-	fmt.Scan(&id)
+	if id == -1 {
+		manajemenStock()
+		return
+	}
+
 	idx := -1
 	for i := 0; i < idMul; i++ {
 		if produk[i].Id == id {
@@ -505,6 +498,7 @@ func tambahStock() {
 	if idx == -1 {
 		fmt.Println("ID tidak ditemukan.")
 	} else {
+		fmt.Printf("Produk: %s | Ukuran: %s | Warna: %s\n", produk[idx].Nama, produk[idx].Ukuran, produk[idx].Warna)
 		fmt.Printf("Stok lama: %d\n", produk[idx].Stok)
 		var jumlah int
 		fmt.Print("Masukkan jumlah stok yang akan ditambahkan: ")
@@ -519,12 +513,13 @@ func tambahStock() {
 func hapusStock() {
 	clear()
 	fmt.Println(bor(15), "Hapus Stok", bor(15))
-	fmt.Print("Cari produk (keyword nama): ")
-	tampil()
+	id := menuCariStok()
 
-	var id int
-	fmt.Print("Masukkan ID produk yang akan dihapus stoknya: ")
-	fmt.Scan(&id)
+	if id == -1 {
+		manajemenStock()
+		return
+	}
+
 	idx := -1
 	for i := 0; i < idMul; i++ {
 		if produk[i].Id == id {
@@ -535,6 +530,7 @@ func hapusStock() {
 	if idx == -1 {
 		fmt.Println("ID tidak ditemukan.")
 	} else {
+		fmt.Printf("Produk: %s | Ukuran: %s | Warna: %s\n", produk[idx].Nama, produk[idx].Ukuran, produk[idx].Warna)
 		fmt.Printf("Stok lama: %d\n", produk[idx].Stok)
 		var jumlah int
 		fmt.Print("Masukkan jumlah stok yang akan dihapus: ")
@@ -546,6 +542,108 @@ func hapusStock() {
 	fmt.Println("Tekan Enter untuk kembali...")
 	fmt.Scanln()
 	manajemenStock()
+}
+
+func menuCariStok() int {
+	clear()
+	var pilihan int
+	fmt.Println(bor(15), "Cari Produk Stok", bor(15))
+	fmt.Println("1. Cari Berdasarkan Nama")
+	fmt.Println("2. Cari Berdasarkan Warna & Ukuran")
+	fmt.Println("3. Kembali")
+	fmt.Print("Pilih Menu: ")
+	fmt.Scan(&pilihan)
+
+	switch pilihan {
+	case 1:
+		return cariStokByNama()
+	case 2:
+		return cariStokByWarnaUkuran()
+	case 3:
+		return -1
+	default:
+		fmt.Println("Menu tidak tersedia")
+		return -1
+	}
+}
+
+func cariStokByNama() int {
+	clear()
+	var nama string
+	fmt.Print("Masukkan nama produk yang dicari: ")
+	fmt.Scan(&nama)
+
+	var hasil []Product
+	for i := 0; i < idMul; i++ {
+		if produk[i].Id != 0 && containsI(produk[i].Nama, nama) {
+			hasil = append(hasil, produk[i])
+		}
+	}
+
+	if len(hasil) == 0 {
+		fmt.Println("Produk dengan nama tersebut tidak ditemukan.")
+		fmt.Println("Tekan Enter untuk kembali...")
+		fmt.Scanln()
+		fmt.Scanln()
+		return menuCariStok()
+	}
+
+	return pilihProdukDariHasil("Hasil Pencarian: "+nama, hasil)
+}
+
+func cariStokByWarnaUkuran() int {
+	clear()
+	fmt.Println("Pencarian Berdasarkan Warna & Ukuran:")
+	fmt.Println("Masukkan Warna:")
+	warna := pilihWarna()
+	fmt.Println("Masukkan Ukuran:")
+	ukuran := pilihUkuran()
+
+	var hasil []Product
+	for i := 0; i < idMul; i++ {
+		if produk[i].Id != 0 &&
+			(containsI(produk[i].Warna, warna) || toLower(produk[i].Warna) == toLower(warna)) &&
+			(containsI(produk[i].Ukuran, ukuran) || toLower(produk[i].Ukuran) == toLower(ukuran)) {
+			hasil = append(hasil, produk[i])
+		}
+	}
+
+	if len(hasil) == 0 {
+		fmt.Println("Produk dengan kombinasi warna dan ukuran tersebut tidak ditemukan.")
+		fmt.Println("Tekan Enter untuk kembali...")
+		fmt.Scanln()
+		fmt.Scanln()
+		return menuCariStok()
+	}
+
+	return pilihProdukDariHasil("Hasil Pencarian: "+warna+" & "+ukuran, hasil)
+}
+
+func pilihProdukDariHasil(title string, hasil []Product) int {
+	clear()
+	fmt.Println(bor(15), title, bor(15))
+
+	for i := 0; i < len(hasil); i++ {
+		p := hasil[i]
+		fmt.Printf("%d. %s | ID: %d | Ukuran: %s | Warna: %s | Stok: %d | Harga: %.2f\n",
+			i+1, p.Nama, p.Id, p.Ukuran, p.Warna, p.Stok, p.Harga)
+	}
+
+	fmt.Println("\nPilih produk (masukkan nomor, atau 0 untuk kembali):")
+	var pilihan int
+	fmt.Scan(&pilihan)
+
+	if pilihan < 1 || pilihan > len(hasil) {
+		if pilihan == 0 {
+			return menuCariStok()
+		}
+		fmt.Println("Pilihan tidak valid.")
+		fmt.Println("Tekan Enter untuk kembali...")
+		fmt.Scanln()
+		return menuCariStok()
+	}
+
+	return hasil[pilihan-1].Id
 }
 
 func cekStokDikit() {
@@ -645,7 +743,6 @@ func statistik() {
 	clear()
 	fmt.Println(bor(15), "Statistik", bor(15))
 
-	// 1. Produk paling populer (Terjual terbanyak)
 	urutTerjual := make([]Product, 0, idMul)
 	for i := 0; i < idMul; i++ {
 		if produk[i].Id != 0 {
@@ -674,10 +771,9 @@ func statistik() {
 		fmt.Printf("%d. %s (Terjual: %d)\n", i+1, urutTerjual[i].Nama, urutTerjual[i].Terjual)
 	}
 
-	// 2. Sisa total stok per kategori
 	type KategoriStok struct {
-		Kategori string
-		Stok     int
+		Kategori	string
+		Stok		int
 	}
 	var statKategori []KategoriStok
 
